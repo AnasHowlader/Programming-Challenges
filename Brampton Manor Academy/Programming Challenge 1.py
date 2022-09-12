@@ -20,11 +20,11 @@ def minutes_to_walk(rodnum):
 
 
 rodnum = float(input("Enter distance in rods:"))
-meters = "Meters: " + str(rods_to_meters(rodnum))
-furlongs = "Furlongs: " + str(furlongs_to_rods(rodnum))
-feet = "Feet: " + str(feet_to_meters(rodnum))
-miles = "Miles: " + str(miles_to_meters(rodnum))
-minstowalk = "Minutes to walk: " + str(minutes_to_walk(rodnum))
+meters = f"Meters:   {(rods_to_meters(rodnum))}"
+furlongs = f"Furlongs:   {(furlongs_to_rods(rodnum))}"
+feet = f"Feet:  {(feet_to_meters(rodnum))}"
+miles = f"Miles:  {(miles_to_meters(rodnum))}"
+minstowalk = f"Minutes to walk:  {(minutes_to_walk(rodnum))}"
 print(meters)
 print(furlongs)
 print(feet)
