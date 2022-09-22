@@ -1,5 +1,8 @@
-import csv 
-from pathlib import Path 
+import csv
+
+
+
+from pathlib import Path
 
 csv_file = Path("Premier 16-17.csv")
 
@@ -31,34 +34,26 @@ def process_results(rows):
         home, away, homegoals, awaygoals, winner = row[1], row[2], row[3], row[4], row[5]
 
         if home not in dictionary:
-            dictionary[home] = [0,0,0]
+            dictionary[home] = [0,0]
         if away not in dictionary:
-            dictionary[away] = [0,0,0]
+            dictionary[away] = [0,0]
 
-        dictionary[home][0] = 38
-        dictionary[away][0] = 38
+
 
         if winner == "D":
-            dictionary[home][1] += 1
-            dictionary[away][1] += 1
+            dictionary[home][0] += 1
+            dictionary[away][0] += 1
         if winner == "H":
-            dictionary[home][1] + 3
-            dictionary[away][1] + 0
+            dictionary[home][0] += 3
+            dictionary[away][0] += 0
         if winner == "A":
-            dictionary[home][1] + 0
-            dictionary[away][1] + 3
+            dictionary[home][0] += 0
+            dictionary[away][0] += 3
 
-            dictionary[home][2] = dictionary[home][2] + int(homegoals) - int(awaygoals)
+            dictionary[home][1] = dictionary[home][1] + int(homegoals) - int(awaygoals)
 
-
-
-
-
-
-
-
-
-
+    dictionary = sorted(dictionary.items(), key=lambda e: e[1][0], reverse = True)
+    data = dictionary
     return dictionary
 
 
