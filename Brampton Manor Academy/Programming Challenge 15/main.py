@@ -19,40 +19,14 @@ def read_html(path):
 
 def process(csv, html):
     i = 0
-    v= 0
-    s= 0
-    k= 0
-    counter = 0
-    while counter != 5:
-        for k in range (0,5):
-
-            lookingfor = 'url("'
-            url_start = html.find(lookingfor, i)
-            url_end = html.find('");', url_start)
-            newlink = html.replace(html[url_start + len(lookingfor):url_end], csv[0+k][0])
-            print(html)
+    for x in range(1,6):
+        html = html.replace(f"name{x}", csv[x-1][2])
+        html = html.replace(f"initials{x}", csv[x-1][1])
+        html = html.replace(f"link{x}", csv[0+x][0])
 
 
 
-
-
-            initials_start = html.find('"el__heading">', v)
-            initials_end = html.find("<", initials_start)
-            initials = csv[0][0+k]
-            replacelink = html.replace(html[initials_start:initials_end], initials)
-
-
-
-
-
-            name_start = html.find('el__text">', s)
-            name_end = html.find("<", name_start)
-            i = url_end
-            v= initials_end
-            s = name_end
-            counter += 1
-            k+=1
-            return newlink
+        return html
 
 
 
