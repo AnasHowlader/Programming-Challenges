@@ -18,13 +18,15 @@ def read_html(path):
 
 
 def process(csv, html):
-    i = 0
-    for x in range(1,6):
-        html = html.replace(f"name{x}", csv[x-1][2])
-        html = html.replace(f"initials{x}", csv[x-1][1])
-        html = html.replace(f"link{x}", csv[0+x][0])
-
-
+    x = 1
+    y = 1
+    while x < 6:
+        while y < 6:
+            html = html.replace(f"name{y}", csv[x-1][2])
+            html = html.replace(f"initials{y}", csv[x-1][1])
+            html = html.replace(f"link{y}", csv[x-1][0])
+            x+=1
+            y+=1
 
         return html
 
