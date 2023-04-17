@@ -15,7 +15,8 @@ STATUS = 2
 TOS = 3
 ERR = 4
 SO = 4
-CARRY = False
+CARRY = 5
+C = 0
 
 class AssemblerInstruction:
     def __init__(self):
@@ -228,7 +229,7 @@ def ConvertToBinary(DecimalNumber):
         Bit = str(Remainder)
         BinaryString = Bit + BinaryString
         DecimalNumber = DecimalNumber // 2
-    while len(BinaryString) < 3:
+    while len(BinaryString) < 4:
         BinaryString = '0' + BinaryString
     return BinaryString
 
@@ -255,19 +256,20 @@ def DisplayCurrentState(SourceCode, Memory, Registers):
     print("*  PC: ", Registers[PC], " ACC: ", Registers[ACC], " TOS: ", Registers[TOS])
     print("*  Status Register: ZNVC")
     print("*                  ", ConvertToBinary(Registers[STATUS]))
+    print("*  Carry:", C)
     DisplayFrameDelimiter(-1)
 
 
 def SetFlags(Value, Registers):
     if Value == 0:
-        Registers[STATUS] = ConvertToDecimal("100")
+        Registers[STATUS] = ConvertToDecimal("1000")
     elif Value < 0:
-        Registers[STATUS] = ConvertToDecimal("010")
+        Registers[STATUS] = ConvertToDecimal("0100")
     elif Value > MAX_INT or Value < -(MAX_INT + 1):
-        Registers[STATUS] = ConvertToDecimal("001")
+        Registers[STATUS] = ConvertToDecimal("0011")
     else:
         print(Value)
-        Registers[STATUS] = ConvertToDecimal("000")
+        Registers[STATUS] = ConvertToDecimal("0000")
     return Registers
 
 
@@ -282,18 +284,6 @@ def ReportStackOverflowError(ErrorMessage, Registers):
     Registers[SO] = 1
     return Registers
 
-def ExecuteADC(Memory, Registers, Address):
-    global CARRY, ACC
-    if CARRY:
-        Memory[PC].OperandValue += 1
-    result = Registers[ACC] + Memory[PC].OperandValue
-    if result > MAX_INT:
-        CARRY = True
-    else:
-        CARRY = False
-    Registers[ACC] = result % 128
-    Registers[PC] += 1
-    return Registers
 
 
 def ExecuteLDA(Memory, Registers, Address):
@@ -377,6 +367,14 @@ def ExecuteRTN(Memory, Registers):
     Registers[PC] = Memory[StackPointer].OperandValue
     return Registers
 
+def ExecuteXOR(Memory, Registers, Address):
+    pass
+
+def ExecuteORR(Memory, Registers, Address):
+    Registers[ACC] = Registers[ACC] | Memory[Address].OperandValue
+    Registers = SetFlags(Registers[ACC], Registers)
+    return Registers
+
 
 def Execute(SourceCode, Memory):
     Registers = [0, 0, 0, 0, 0]
@@ -396,8 +394,8 @@ def Execute(SourceCode, Memory):
         Registers[PC] = Registers[PC] + 1
         if OpCode == "LDA":
             Registers = ExecuteLDA(Memory, Registers, Operand)
-        elif OpCode == "ADC":
-            Registers = ExecuteADC(Memory, Registers, Operand)
+        elif OpCode == "ORR":
+            Registers = ExecuteORR(Memory, Registers, Operand)
         elif OpCode == "STA":
             Memory = ExecuteSTA(Memory, Registers, Operand)
         elif OpCode == "LDA#":
