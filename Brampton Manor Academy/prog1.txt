@@ -3,11 +3,12 @@
  NUM3:      -1
  NUM4:      125
 START: LDA  NUM1 * test while loop
+       CLC
 WHILE: CMP# 12
        BEQ  WEND
-       ADD  NUM2
+       ADC  NUM2
        JMP  WHILE
        SKP
  WEND: STA  NUM3
-       ADD  NUM4
+       ADC  NUM4
        HLT

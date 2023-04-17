@@ -131,7 +131,7 @@ def ExtractLabel(Instruction, LineNumber, Memory, SymbolTable):
 
 def ExtractOpCode(Instruction, LineNumber, Memory):
     if len(Instruction) > 9:
-        OpCodeValues = ["LDA", "STA", "LDA#", "HLT", "ADD", "JMP", "SUB", "CMP#", "BEQ", "SKP", "JSR", "RTN", "   "]
+        OpCodeValues = ["LDA", "STA", "LDA#", "HLT", "ADD", "JMP", "SUB", "CMP#", "BEQ", "SKP", "JSR", "RTN", "ADC", "CLC", "   "]
         Operation = Instruction[7:10]
         if len(Instruction) > 10:
             AddressMode = Instruction[10:11]
@@ -282,6 +282,19 @@ def ReportStackOverflowError(ErrorMessage, Registers):
     Registers[SO] = 1
     return Registers
 
+def ExecuteADC(Memory, Registers, Address):
+    global CARRY, ACC
+    if CARRY:
+        Memory[PC].OperandValue += 1
+    result = Registers[ACC] + Memory[PC].OperandValue
+    if result > MAX_INT:
+        CARRY = True
+    else:
+        CARRY = False
+    Registers[ACC] = result % 128
+    Registers[PC] += 1
+    return Registers
+
 
 def ExecuteLDA(Memory, Registers, Address):
     Registers[ACC] = Memory[Address].OperandValue
@@ -383,6 +396,8 @@ def Execute(SourceCode, Memory):
         Registers[PC] = Registers[PC] + 1
         if OpCode == "LDA":
             Registers = ExecuteLDA(Memory, Registers, Operand)
+        elif OpCode == "ADC":
+            Registers = ExecuteADC(Memory, Registers, Operand)
         elif OpCode == "STA":
             Memory = ExecuteSTA(Memory, Registers, Operand)
         elif OpCode == "LDA#":
@@ -405,7 +420,7 @@ def Execute(SourceCode, Memory):
             Registers = ExecuteRTN(Memory, Registers)
         if Registers[ERR] == 0:
             print(Registers[PC])
-            OpCode = Memory[Registers[PC]].OpCode
+            OpCode = Memory[Registers[PC] in range(HI_MEM)].OpCode
 
             DisplayCurrentState(SourceCode, Memory, Registers)
         else:
