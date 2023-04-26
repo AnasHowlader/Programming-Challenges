@@ -1,0 +1,3 @@
+       LDA# 9    * test negative
+       LDA# 8
+       HLT

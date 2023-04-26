@@ -1,0 +1,10 @@
+       LDA# 3       * test negative
+       CMP  NUM1
+       STA  FINAL
+       HLT
+
+
+
+
+ NUM1:      3
+FINAL:      0
