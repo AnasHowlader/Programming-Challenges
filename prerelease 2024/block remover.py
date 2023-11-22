@@ -70,19 +70,24 @@ class Puzzle():
                     Items = f.readline().rstrip().split(",")
                     if Items[0] == "@":
                         C = BlockedCell()
-                        self.__Grid.append(C)
+                        self.__Grid.append(C)                
                     else:
                         C = Cell()
                         C.ChangeSymbolInCell(Items[0])
-                        for CurrentSymbol in range(1, len(Items)):
-                            C.AddToNotAllowedSymbols(Items[CurrentSymbol])
+                        if Cell().GetSymbol() == "-":
+                            pass
+                        if Cell().GetSymbol() == Items[0]:
+                            C.AddToNotAllowedSymbols(Items[0])
                         self.__Grid.append(C)
                 self.__Score = int(f.readline().rstrip())
                 self.__SymbolsLeft = int(f.readline().rstrip())
+
         except:
             print("Puzzle not loaded")
             Main()
             self.__LoadPuzzle(Filename)
+
+
 
     def AttemptPuzzle(self):
         Finished = False
@@ -247,8 +252,9 @@ class BlockedCell(Cell):
         self._Symbol = "@"
 
     def CheckSymbolAllowed(self, SymbolToCheck):
-        return False
-
+        if SymbolToCheck == self._Symbol:
+            return False
+        return True
 
 if __name__ == "__main__":
     Main()
