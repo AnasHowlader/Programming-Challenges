@@ -76,8 +76,6 @@ class Puzzle():
                         C.ChangeSymbolInCell(Items[0])
                         for CurrentSymbol in range(1, len(Items)):
                             C.AddToNotAllowedSymbols(Items[CurrentSymbol])
-                        if C.IsEmpty():
-                            C.RemoveInvalidSymbols()
                         self.__Grid.append(C)
                 self.__Score = int(f.readline().rstrip())
                 self.__SymbolsLeft = int(f.readline().rstrip())
@@ -85,8 +83,6 @@ class Puzzle():
             print("Puzzle not loaded")
             Main()
             self.__LoadPuzzle(Filename)
-
-
 
     def AttemptPuzzle(self):
         Finished = False
@@ -109,19 +105,23 @@ class Puzzle():
                     Valid = True
                 except:
                     pass
-
             Symbol = self.__GetSymbolFromUser()
             self.__SymbolsLeft -= 1
             CurrentCell = self.__GetCell(Row, Column)
             if CurrentCell.CheckSymbolAllowed(Symbol):
+                s = CurrentCell.GetSymbol()
                 CurrentCell.ChangeSymbolInCell(Symbol)
                 AmountToAddToScore = self.CheckforMatchWithPattern(Row, Column)
                 if AmountToAddToScore > 0:
                     self.__Score += AmountToAddToScore
+                self.DisplayPuzzle()
+                Undo = input("undo?")
+                if Undo == "y":
+                    CurrentCell.ChangeSymbolInCell(s)
+                self.DisplayPuzzle()
             if self.__SymbolsLeft == 0:
                 Finished = True
         print()
-        self.DisplayPuzzle()
         print()
         return self.__Score
 
@@ -223,9 +223,6 @@ class Cell():
         else:
             return self._Symbol
 
-    def RemoveInvalidSymbols(self):
-        self.__SymbolsNotAllowed.clear()
-
     def IsEmpty(self):
         if len(self._Symbol) == 0:
             return True
@@ -254,9 +251,8 @@ class BlockedCell(Cell):
         self._Symbol = "@"
 
     def CheckSymbolAllowed(self, SymbolToCheck):
-        if SymbolToCheck == self._Symbol:
-            return False
-        return True
+        return False
+
 
 if __name__ == "__main__":
     Main()
